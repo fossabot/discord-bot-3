@@ -20,7 +20,6 @@ module.exports = class Status extends commando.Command {
                     type: "string",
                     key: "name",
                     prompt: "What should the status be?"
-
                 }
             ]
         });
