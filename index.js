@@ -3,21 +3,20 @@ const path = require("path");
 const sl = require("singleline");
 const config = require("./config.json");
 const Snoowrap = require("snoowrap");
+const requireAll = require("require-all");
 
 var dbl;
 
 require("./structures/");
 
-const messageServices = [
-    require("./services/message/messagePreview"),
-    require("./services/message/links"),
-    require("./services/message/nsfw"),
-    require("./services/message/subscriptions")
-];
+function requireDirectory(directory) {
+    return Object.values(requireAll({
+        dirname: require("path").join(__dirname, directory)
+    }));
+}
 
-const inhibitors = [
-    require("./services/inhibitors/checkChannel")
-];
+const messageServices = requireDirectory("/services/message");
+const inhibitors = requireDirectory("./services/inhibitors");
 
 const client = new Commando.Client({
     owner: ["147365975707090944", "236504705428094976"],
@@ -55,11 +54,28 @@ client.setProvider(
 
 client.config = config;
 
-var loadedCommands = new Map();
-
-client.on("commandRegister", c => {
-    loadedCommands.set(c.name, c);
-});
+{
+    let loadedCommands = new Map();
+    
+    client.on("commandRegister", c => {
+        loadedCommands.set(c.name, c);
+    });
+    
+    client.on("ready", async () => {
+        var groups = new Map();
+        for(const [, command] of loadedCommands) {
+            groups.set(command.group, groups.get(command.group) + 1 || 1);
+        }
+        groups = new Map([...groups].sort((a, b) => {
+            return (a[1] > b[1] && -1) || (a[1] === b[1] ? 0 : 1);
+        }));
+        for(const [group, length] of groups) {
+            console.log(`[LOAD] Found \u001b[37;1m${length.toString().padStart(2, " ")}\u001b[0m commands in \u001b[36m${group.id}\u001b[0m`);
+        }
+        
+        console.log("[EVENT]\u001b[37;1m Ready!\u001b[0m");
+    });
+}
 
 (async () => {
     try {
@@ -120,21 +136,6 @@ client.on("commandRegister", c => {
     }
 })();
 
-client.on("ready", async () => {
-    var groups = new Map();
-    for(const [, command] of loadedCommands) {
-        groups.set(command.group, groups.get(command.group) + 1 || 1);
-    }
-    groups = new Map([...groups].sort((a, b) => {
-        return (a[1] > b[1] && -1) || (a[1] === b[1] ? 0 : 1);
-    }));
-    for(const [group, length] of groups) {
-        console.log(`[LOAD] Found \u001b[37;1m${length.toString().padStart(2, " ")}\u001b[0m commands in \u001b[36m${group.id}\u001b[0m`);
-    }
-
-    console.log("[EVENT]\u001b[37;1m Ready!\u001b[0m");
-});
-
 client.on("commandRun", (c, p, msg) => {
     var message = `[USE] \u001b[35;1m[${msg.channel.type === "dm" ? "DM" : msg.guild.name} (${msg.guild ? msg.guild.id : 0})] \u001b[37;1m(${msg.author.tag} [${msg.author.id}])\u001b[0m -> `;
     var content = msg.content;
@@ -177,9 +178,10 @@ for(var inhibitor of inhibitors) {
 client.login(config.token);
 
 client.once("providerReady", async p => {
+    const activity = await p.get("global", "status");
     client.user.setActivity(
-        await p.get("global", "status").name,
-        { type: await p.get("global", "status").type }
+        activity.name,
+        { type: activity.type }
     );
 });
 
