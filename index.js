@@ -474,12 +474,16 @@ client.on("commandRegister", c => {
 
         module.exports.reddit = r;
     } catch(e) {
-        console.error(`[REDDIT] Reddit connection not successful, error:\n${e.error.error}, ${e.error.message}`);
-        if(e.error.error === 401) {
-            console.error(sl(`[REDDIT]
+        if(!e.error) {
+            console.log("[ERROR] Unexpected error happened:", e);
+        } else {
+            console.error(`[REDDIT] Reddit connection not successful, error:\n${e.error.error}, ${e.error.message}`);
+            if(e.error.error === 401) {
+                console.error(sl(`[REDDIT]
                 This probably means, that some values in your config are wrong, and therefore the bot cannot access Reddit.
                 Please contact the original creators of this bot if you're absolutely sure that you set it up correctly.
-            `));
+                `));
+            }
         }
     } finally {
         client.registry.registerGroups([
