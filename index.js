@@ -55,12 +55,12 @@ client.setProvider(
 client.config = config;
 
 {
-    let loadedCommands = new Map();
-    
+    const loadedCommands = new Map();
+
     client.on("commandRegister", c => {
         loadedCommands.set(c.name, c);
     });
-    
+
     client.on("ready", async () => {
         var groups = new Map();
         for(const [, command] of loadedCommands) {
@@ -72,7 +72,7 @@ client.config = config;
         for(const [group, length] of groups) {
             console.log(`[LOAD] Found \u001b[37;1m${length.toString().padStart(2, " ")}\u001b[0m commands in \u001b[36m${group.id}\u001b[0m`);
         }
-        
+
         console.log("[EVENT]\u001b[37;1m Ready!\u001b[0m");
     });
 }
@@ -187,13 +187,13 @@ client.once("providerReady", async p => {
 
 client.once("ready", () => {
     if(config.channel) {
-        (async() => {
+        (async () => {
             try {
                 var ch = await client.channels.fetch(config.channel);
             } catch(e) {
                 return console.warn("Coudln't fetch log channel");
             }
-            
+
             client.on("guildCreate", g => {
                 ch.send({
                     embed: {
@@ -202,7 +202,7 @@ client.once("ready", () => {
                     }
                 });
             });
-            
+
             client.on("guildDelete", g => {
                 ch.send({
                     embed: {
@@ -211,7 +211,7 @@ client.once("ready", () => {
                     }
                 });
             });
-            
+
             client.on("error", error => {
                 ch.send({
                     embed: {
@@ -220,7 +220,7 @@ client.once("ready", () => {
                     }
                 });
             });
-            
+
             client.on("commandError", (cmd, err, msg) => {
                 ch.send({
                     embed: {
@@ -230,9 +230,9 @@ client.once("ready", () => {
                             text: msg.guild.name
                         }
                     }
-                })
+                });
             });
-            
+
             process.on("unhandledRejection", async e => {
                 try {
                     await ch.send({
