@@ -37,6 +37,6 @@ module.exports = class runscripts extends commando.Command {
     }
 };
 
-if(os.platform() === "win32") {
+if(require("os").platform() === "win32") {
     console.warn("Windows support for scripts is limited and may not work.");
 }
