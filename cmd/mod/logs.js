@@ -4,9 +4,9 @@ const newEmbed = require("../../embed");
 module.exports = class Logs extends commando.Command {
     constructor(client) {
         super(client, {
-            name: "log",
-            memberName: "log",
-            aliases: ["logs"],
+            name: "logs",
+            memberName: "logs",
+            aliases: ["log"],
             group: "mod",
             description: "Log settings. See `help` subcommand for more info. When altering, use +option to add, -option to remove and !option to toggle log options",
             hidden: true,
@@ -266,7 +266,7 @@ module.exports = class Logs extends commando.Command {
                     ...log,
                     ...data
                 };
-                await msg.guild.settings.set("logs.channels." + logID, logs[logID]);
+                await msg.guild.settings.set("logs.channels." + logID, logs[logID]);a
                 return true;
             }
         }
