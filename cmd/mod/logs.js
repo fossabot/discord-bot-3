@@ -105,10 +105,10 @@ module.exports = class Logs extends commando.Command {
             "invite.create",
             "invite.delete"
         ];
-        var chs = this.getLogs(msg);
+        var chs = await this.getLogs(msg);
         for(const ch of chs) {
             if(!ch.settings.length || !msg.guild.channels.resolve(ch.id)) {
-                this.alterLogsChannel(msg, ch.id, {
+                await this.alterLogsChannel(msg, ch.id, {
                     ...ch,
                     deleted: true
                 });
@@ -124,7 +124,7 @@ module.exports = class Logs extends commando.Command {
                 msg.channel.send(embed);
                 break;
             case "list":
-                var channels = this.getLogs(msg);
+                var channels = chs;
                 var embed = newEmbed();
                 embed.setTitle("Logging channels:");
                 embed.setDescription("Found " + channels.length + " channels to log into:");
@@ -137,7 +137,7 @@ module.exports = class Logs extends commando.Command {
 
             case "add":
             case "set":
-                var channels = this.addLogsChannel(msg, {
+                var channels = await this.addLogsChannel(msg, {
                     settings: ["*"],
                     id: channel.id
                 });
@@ -145,7 +145,7 @@ module.exports = class Logs extends commando.Command {
                 break;
 
             case "remove":
-                if(this.removeLogsChannel(msg, channel.id)) {
+                if(await this.removeLogsChannel(msg, channel.id)) {
                     msg.channel.send("Removed the channel");
                 } else {
                     msg.channel.send("Channel doesn't exist");
@@ -153,7 +153,7 @@ module.exports = class Logs extends commando.Command {
                 break;
 
             case "alter":
-                var ch = this.getLogsChannel(msg, channel.id);
+                var ch = await this.getLogsChannel(msg, channel.id);
                 if(!ch) return msg.channel.send("The channel is not set as logging channel!");
 
                 for(var option of settings.split(" ")) {
@@ -182,7 +182,7 @@ module.exports = class Logs extends commando.Command {
 
                 ch.settings = ch.settings.filter(c => allowedOptions.includes(c));
 
-                var altered = this.alterLogsChannel(msg, channel.id, {
+                var altered = await this.alterLogsChannel(msg, channel.id, {
                     settings: ch.settings,
                     id: channel.id
                 });
@@ -196,7 +196,7 @@ module.exports = class Logs extends commando.Command {
             case "view":
                 var embed = newEmbed();
                 embed.setTitle("Logging channel `#" + channel.name + "`");
-                var ch = this.getLogsChannel(msg, channel.id);
+                var ch = await this.getLogsChannel(msg, channel.id, chs);
                 if(!ch) {
                     embed.setDescription("The channel <#" + channel.id + "> is not setup as channel for logs!");
                 } else {
@@ -208,17 +208,23 @@ module.exports = class Logs extends commando.Command {
         /* eslint-enable no-redeclare */
     }
 
-    getLogs(msg, deleted = false) {
+    /**
+     * Returns array of channels that can be used
+     * @param {Message} msg Message to get channels from
+     * @param {Boolean} deleted return deleted?
+     */
+    async getLogs(msg, deleted = false) {
         var settings = msg.guild.settings;
         var sets = {
             * [Symbol.iterator]() {
                 var i = 0;
-                while(settings.get("logs.channels." + i, null)) {
-                    if(settings.get("logs.channels." + i).deleted && !deleted) {
+                while(await settings.get("logs.channels." + i, null)) {
+                    var value = await settings.get("logs.channels." + i);
+                    if(value.deleted && !deleted) {
                         i++;
                         continue;
                     }
-                    yield settings.get("logs.channels." + i);
+                    yield value;
                     i++;
                 }
             }
@@ -231,28 +237,28 @@ module.exports = class Logs extends commando.Command {
         return logs;
     }
 
-    getLogsChannel(msg, id) {
-        var logs = this.getLogs(msg);
+    async getLogsChannel(msg, id, chs) {
+        var logs = chs || await this.getLogs(msg);
         return logs.filter(c => c.id === id)[0];
     }
 
-    addLogsChannel(msg, data) {
-        if(this.alterLogsChannel(msg, data.id, { ...data, deleted: false }, true)) {
+    async addLogsChannel(msg, data, chs) {
+        if(await this.alterLogsChannel(msg, data.id, { ...data, deleted: false })) {
             return true;
         }
-        if(this.getLogsChannel(msg, data.id)) {
+        if(await this.getLogsChannel(msg, data.id)) {
             return false;
         }
-        var length = this.getLogs(msg).length;
+        var length = (chs || await this.getLogs(msg)).length;
         msg.guild.settings.set("logs.channels." + length, data);
     }
 
-    removeLogsChannel(msg, id) {
-        return this.alterLogsChannel(msg, id, { deleted: true });
+    removeLogsChannel(msg, id, chs) {
+        return this.alterLogsChannel(msg, id, { deleted: true }, chs);
     }
 
-    alterLogsChannel(msg, id, data, deleted) {
-        var logs = this.getLogs(msg);
+    async alterLogsChannel(msg, id, data, chs) {
+        var logs = chs || await this.getLogs(ms);
         for(const logID in logs) {
             const log = logs[logID];
             if(log.id === id) {
@@ -260,7 +266,7 @@ module.exports = class Logs extends commando.Command {
                     ...log,
                     ...data
                 };
-                msg.guild.settings.set("logs.channels." + logID, logs[logID]);
+                await msg.guild.settings.set("logs.channels." + logID, logs[logID]);
                 return true;
             }
         }
