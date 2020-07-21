@@ -21,4 +21,8 @@ module.exports = class WikiExtractor extends commando.Command {
             }]
         });
     }
+
+    run(msg, { page, lang }) {
+        msg.reply("Wiki searching is not done yet");
+    }
 };
