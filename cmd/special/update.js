@@ -1,4 +1,5 @@
 const commando = require("@iceprod/discord.js-commando");
+const fs = require("fs");
 const { exec } = require("child_process");
 
 module.exports = class update extends commando.Command {
@@ -12,7 +13,8 @@ module.exports = class update extends commando.Command {
             args: []
         });
     }
-    run(msg) {
+
+    run(msg) {        
         exec("./scripts/update.sh", async (err, sout, serr) => {
             await msg.channel.send("Done");
             if(err) await msg.channel.send("```\n" + err.message + "```");
@@ -21,3 +23,7 @@ module.exports = class update extends commando.Command {
         });
     }
 };
+
+if(!fs.existsSync("./scripts/update.sh")) {
+    module.exports = null;
+}
