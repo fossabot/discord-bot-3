@@ -11,7 +11,7 @@ if(!isMainThread || workerData) {
     const tick = ":white_check_mark:";
     const cross = ":x:";
 
-    console.log("Worker started");
+    console.log("[Worker] start");
 
     var command = workerData.js;
     var lang = workerData.lang;
@@ -59,5 +59,6 @@ if(!isMainThread || workerData) {
             error: e
         });
     }
+    console.log("[worker] end");
     process.exit(0);
 }
