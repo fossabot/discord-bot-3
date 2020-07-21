@@ -185,48 +185,69 @@ client.once("providerReady", async p => {
     );
 });
 
-if(config.channel) {
-    (async() => {
-        var ch = await client.channels.fetch("693843633442521210");
-        client.on("guildCreate", g => {
-            ch.send({
-                title: "New guild - " + g.title,
-                description: "Members: " + g.memberCount
+client.once("ready", () => {
+    if(config.channel) {
+        (async() => {
+            try {
+                var ch = await client.channels.fetch(config.channel);
+            } catch(e) {
+                return console.warn("Coudln't fetch log channel");
+            }
+            
+            client.on("guildCreate", g => {
+                ch.send({
+                    embed: {
+                        title: "New guild - " + g.title,
+                        description: "Members: " + g.memberCount
+                    }
+                });
             });
-        });
-        
-        client.on("guildDelete", g => {
-            ch.send({
-                title: "Guild removed - " + g.title,
-                description: "Members: " + g.memberCount
+            
+            client.on("guildDelete", g => {
+                ch.send({
+                    embed: {
+                        title: "Guild removed - " + g.title,
+                        description: "Members: " + g.memberCount
+                    }
+                });
             });
-        });
-
-        client.on("error", error => {
-            ch.send({
-                title: "Error - " + error.name,
-                description: error.message.substr(0, 1024)
+            
+            client.on("error", error => {
+                ch.send({
+                    embed: {
+                        title: error.name,
+                        description: error.message.substr(0, 1024)
+                    }
+                });
             });
-        });
-        
-        client.on("commandoError", (cmd, err, msg) => {
-            ch.send({
-                title: "Error (" + cmd.name + ") - " + err.name,
-                description: err.message.substr(0, 1024),
-                footer: {
-                    text: msg.guild.name
+            
+            client.on("commandError", (cmd, err, msg) => {
+                ch.send({
+                    embed: {
+                        title: cmd.name + " - " + err.name,
+                        description: err.message.substr(0, 1024),
+                        footer: {
+                            text: msg.guild.name
+                        }
+                    }
+                })
+            });
+            
+            process.on("unhandledRejection", async e => {
+                try {
+                    await ch.send({
+                        embed: {
+                            title: "Rejection - " + e.name,
+                            description: e.message.substr(0, 1024)
+                        }
+                    });
+                } catch(e) {
+                    console.warn("[REJECTION LOG] Rejection log error", e);
                 }
-            })
-        });
-        
-        process.on("unhandledRejection", e => {
-            ch.send({
-                title: "Rejection - " + e.name,
-                description: e.message.substr(0, 1024)
-            })
-        });
-    })();
-}
+            });
+        })();
+    }
+});
 
 process.on("unhandledRejection", (e) => {
     console.error("[REJECTION]", e);
