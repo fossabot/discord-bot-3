@@ -185,21 +185,46 @@ client.once("providerReady", async p => {
     );
 });
 
-client.on("guildCreate", async g => {
+if(config.channel) {   
     var ch = await client.channels.fetch("693843633442521210");
-    ch.send({
-        title: "New guild - " + g.title,
-        description: "Members: " + g.memberCount
+    client.on("guildCreate", async g => {
+        ch.send({
+            title: "New guild - " + g.title,
+            description: "Members: " + g.memberCount
+        });
     });
-});
 
-client.on("guildDelete", async g => {
-    var ch = await client.channels.fetch("693843633442521210");
-    ch.send({
-        title: "Guild removed - " + g.title,
-        description: "Members: " + g.memberCount
+    client.on("guildDelete", async g => {
+        ch.send({
+            title: "Guild removed - " + g.title,
+            description: "Members: " + g.memberCount
+        });
     });
-});
+
+    client.on("error", error => {
+        ch.send({
+            title: "Error - " + error.name,
+            description: error.message.substr(0, 1024)
+        });
+    });
+
+    client.on("commandoError", (cmd, err, msg) => {
+        ch.send({
+            title: "Error (" + cmd.name + ") - " + err.name,
+            description: err.message.substr(0, 1024),
+            footer: {
+                text: msg.guild.name
+            }
+        })
+    });
+
+    process.on("unhandledRejection", e => {
+        ch.send({
+            title: "Rejection - " + e.name,
+            description: e.message.substr(0, 1024)
+        })
+    });
+}
 
 process.on("unhandledRejection", (e) => {
     console.error("[REJECTION]", e);
