@@ -1,5 +1,6 @@
 const commando = require("@iceprod/discord.js-commando");
 const fs = require("fs");
+const { exec } = require("child_process");
 
 module.exports = class runscripts extends commando.Command {
     constructor(client) {
@@ -25,6 +26,7 @@ module.exports = class runscripts extends commando.Command {
             ]
         });
     }
+
     run(msg, { script }) {
         exec("./scripts/" + script, async (err, sout, serr) => {
             await msg.channel.send("Done");
@@ -34,3 +36,7 @@ module.exports = class runscripts extends commando.Command {
         });
     }
 };
+
+if(os.platform() === "win32") {
+    console.warn("Windows support for scripts is limited and may not work.");
+}
