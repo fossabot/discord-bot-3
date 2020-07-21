@@ -216,7 +216,7 @@ module.exports = class Logs extends commando.Command {
     async getLogs(msg, deleted = false) {
         var settings = msg.guild.settings;
         var sets = {
-            * [Symbol.iterator]() {
+            async * [Symbol.asyncIterator]() {
                 var i = 0;
                 while(await settings.get("logs.channels." + i, null)) {
                     var value = await settings.get("logs.channels." + i);
@@ -230,7 +230,7 @@ module.exports = class Logs extends commando.Command {
             }
         };
         var logs = [];
-        for(var set of sets) {
+        for await(var set of sets) {
             logs.push(set);
         }
 
