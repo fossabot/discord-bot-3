@@ -9,6 +9,7 @@ module.exports = class Eval extends commando.Command {
         super(client, {
             name: "eval",
             memberName: "eval",
+            aliases: ["node"],
             group: "dev",
             description: "Runs given JS code",
             args: [{
@@ -25,7 +26,12 @@ module.exports = class Eval extends commando.Command {
         const worker = new Worker(path.join(__dirname, "/eval/worker.js"), {
             workerData: {
                 js: cmd.js,
-                lang
+                lang: {
+                    eval: lang.eval,
+                    general: {
+                        failed: lang.general.failed
+                    }
+                }
             }
         });
         var timeout = null;
