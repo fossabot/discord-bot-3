@@ -33,9 +33,14 @@ The setup is quite simple:
 * Aquire token (from [discord developer portal](https://discordapp.com/developers)) and save it in config.json as token
 * Create `managers/mysql.js` that exports pool (see [wiki](https://github.com/danbulant/ice-bot/wiki/Setting-up-database))
 * Create MySQL databse with correct tables. (See [wiki](https://github.com/danbulant/ice-bot/wiki/Setting-up-database))
+* (optional) Setup [scripts](#scripts)
 * Start the bot (with `node .`)
 
 Then optionaly if you want to have link checking, add `virustotal` field into config.json containing VirusTotal api key.
+
+## Scripts
+
+Scripts are used for working with system from bot, most notably the `update` functionality. For most part, just create folder `scripts` and put `update.sh` in it with contents `git pull`. It's made separately to allow implementing custom update functions, like downloading latest release or updating bot and other services running on server.
 
 ## Dependencies
 
