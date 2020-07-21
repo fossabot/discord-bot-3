@@ -13,7 +13,7 @@ module.exports = class update extends commando.Command {
         });
     }
     run(msg) {
-        exec("git pull", async (err, sout, serr) => {
+        exec("./scripts/update.sh", async (err, sout, serr) => {
             await msg.channel.send("Done");
             if(err) await msg.channel.send("```\n" + err.message + "```");
             if(sout) await msg.channel.send("```\n" + sout + "```");
