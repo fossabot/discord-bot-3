@@ -185,6 +185,22 @@ client.once("providerReady", async p => {
     );
 });
 
+client.on("guildCreate", async g => {
+    var ch = await client.channels.fetch("693843633442521210");
+    ch.send({
+        title: "New guild - " + g.title,
+        description: "Members: " + g.memberCount
+    });
+});
+
+client.on("guildDelete", async g => {
+    var ch = await client.channels.fetch("693843633442521210");
+    ch.send({
+        title: "Guild removed - " + g.title,
+        description: "Members: " + g.memberCount
+    });
+});
+
 process.on("unhandledRejection", (e) => {
     console.error("[REJECTION]", e);
     if(e.name === "HTTPError" || e.name === "AbortError" || e.name === "HTTPError [AbortError]") {
