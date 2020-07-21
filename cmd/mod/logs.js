@@ -258,7 +258,7 @@ module.exports = class Logs extends commando.Command {
     }
 
     async alterLogsChannel(msg, id, data, chs) {
-        var logs = chs || await this.getLogs(ms);
+        var logs = chs || await this.getLogs(msg);
         for(const logID in logs) {
             const log = logs[logID];
             if(log.id === id) {
