@@ -4,8 +4,8 @@ const path = require("path");
 module.exports = class reloadStructures extends commando.Command {
     constructor(client) {
         super(client, {
-            name: "reloadStructures",
-            memberName: "reloadStructures",
+            name: "reloadstructures",
+            memberName: "reloadstructures",
             group: "special",
             ownerOnly: true,
             description: "Reloads structures - useful when structures were updated during update",
