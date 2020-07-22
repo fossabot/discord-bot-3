@@ -31,7 +31,7 @@ module.exports = class Jump extends commando.Command {
             msg.guild.music.channel = msg.channel;
             msg.channel.send("Jumped to position " + number + ".");
         } catch(e) {
-            console.log(e);
+            console.error(e);
             if(e.message === "range") {
                 msg.channel.send("The number of songs selected is out of limits.");
             } else {

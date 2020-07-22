@@ -1,6 +1,7 @@
 const commando = require("@iceprod/discord.js-commando");
 const fs = require("fs");
 const { exec } = require("child_process");
+const colors = require("colors");
 
 module.exports = class runscripts extends commando.Command {
     constructor(client) {
@@ -38,5 +39,5 @@ module.exports = class runscripts extends commando.Command {
 };
 
 if(require("os").platform() === "win32") {
-    console.warn("Windows support for scripts is limited and may not work.");
+    console.warn("[WARNING] Windows support for scripts is limited and may not work.".yellow);
 }

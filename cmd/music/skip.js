@@ -32,7 +32,7 @@ module.exports = class Skip extends commando.Command {
             msg.guild.music.channel = msg.channel;
             msg.channel.send("Skipped " + number + " songs.");
         } catch(e) {
-            console.log(e);
+            console.error(e);
             if(e.message === "range") {
                 msg.channel.send("The number of songs selected is out of limits.");
             } else {
