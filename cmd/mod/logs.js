@@ -119,8 +119,8 @@ module.exports = class Logs extends commando.Command {
             case "help":
                 var embed = newEmbed();
                 embed.setTitle("Logs");
-                embed.setDescription("For more info about how logs settings work, click the title.");
-                embed.setURL("http://aztec.danbulant.eu/wiki/doku.php?id=help:logs");
+                embed.setDescription("For more info about how logs settings work, see our [wiki](https://wiki.aztec.bot/) or click the title.");
+                embed.setURL("https://wiki.aztec.bot/en/commands/logs");
                 msg.channel.send(embed);
                 break;
             case "list":
