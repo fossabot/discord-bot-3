@@ -36,6 +36,8 @@ module.exports = {
         serverOnly: "(Pouze v serverech)",
         nsfw: "(18+)",
         default: "Essentials",
+        arguments: "Argumenty",
+        defaultArg: "Výchozí hodnota:",
         format: "Formát",
         aliases: "Aliasy",
         details: "Detaily",
