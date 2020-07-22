@@ -16,14 +16,6 @@ module.exports = class Subscribe extends commando.Command {
                     validate(val) {
                         return !Number.isNaN(BigInt(val));
                     },
-                    key: "guild",
-                    prompt: "what is the guild ID to subscribe to?"
-                },
-                {
-                    type: "string",
-                    validate(val) {
-                        return !Number.isNaN(BigInt(val));
-                    },
                     key: "channel",
                     prompt: "what is the channel ID of that guild to subscribe to?"
                 }
@@ -31,28 +23,25 @@ module.exports = class Subscribe extends commando.Command {
         });
     }
 
-    async run(omsg, { channel, guild }) {
-        var g = await this.client.guilds.resolve(guild);
+    async run(omsg, { channel }) {
         var msg = await omsg.channel.send("Subscribing...");
-        if(!g) {
-            return msg.edit("Couldn't find that guild. Check that the ID is correct.");
-        }
         var ch = await this.client.channels.fetch(channel);
         if(!ch) {
             return msg.edit("Couldn't find that channel. Check that the ID is correct.");
         }
 
-        if(ch.guild.id !== g.id) {
-            return msg.edit("The channel isn't in the selected guild.");
-        }
-
         var target = msg.guild.id;
         var targetChannel = msg.channel.id;
+        var guild = ch.guild;
+
+        if(!guild) {
+            return msg.edit("Selected channel is not in any server");
+        }
 
         var [channels] = await pool.query("SELECT * FROM subscription_channels WHERE guild=?", [guild]);
 
         if(~channels.findIndex(val => val.channel === channel)) {
-            return msg.edit("Only the following channels are available to subscription:\n" +
+            return msg.edit("Only the following channels are available to subscription from that server:\n" +
                 channels.map(val => "<#" + val.channel + "> (" + val.channel + ")").join());
         }
 
@@ -74,7 +63,8 @@ module.exports = class Subscribe extends commando.Command {
 
             msg.edit(`**${omsg.member.displayName}** has added **${ch.name}** to this channel. It's most important updates will show up here.`);
         } catch(e) {
-            console.warn("[SUBSCRIPTION]", e);
+            console.log("[ERROR]", e);
+            this.client.emit("commandError", this, e, msg);
             msg.edit("Couldn't add that channel here. Contact TechmandanCZ#0135 for more information.");
         }
     }
