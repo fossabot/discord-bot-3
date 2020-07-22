@@ -5,7 +5,7 @@ const config = require("./config.json");
 const Snoowrap = require("snoowrap");
 const requireAll = require("require-all");
 // eslint-disable-next-line no-unused-vars
-const colors = require("colors");
+require("colors");
 
 var dbl;
 
@@ -72,7 +72,7 @@ client.config = config;
             return (a[1] > b[1] && -1) || (a[1] === b[1] ? 0 : 1);
         }));
         for(const [group, length] of groups) {
-            console.log(`[LOAD] Found \u001b[37;1m${length.toString().padStart(2, " ")}\u001b[0m commands in \u001b[36m${group.id}\u001b[0m`);
+            console.log(`[LOAD] Found ${length.toString().padStart(2, " ").bold} commands in ${group.id.toString().cyan}`);
         }
 
         const ready = [
@@ -230,7 +230,7 @@ client.once("ready", async () => {
                 ch.send({
                     embed: {
                         title: error.name,
-                        description: error.message.substr(0, 1024)
+                        description: (error.message + "\n" + error.stack).substr(0, 1024)
                     }
                 });
             });
@@ -239,7 +239,7 @@ client.once("ready", async () => {
                 ch.send({
                     embed: {
                         title: cmd.name + " - " + err.name,
-                        description: err.message.substr(0, 1024),
+                        description: (err.message + "\n" + err.stack).substr(0, 1024),
                         footer: {
                             text: msg.guild.name
                         }
@@ -252,7 +252,7 @@ client.once("ready", async () => {
                     await ch.send({
                         embed: {
                             title: "Rejection - " + e.name,
-                            description: e.message.substr(0, 1024)
+                            description: (e.message + "\n" + e.stack).substr(0, 1024)
                         }
                     });
                 } catch(e) {
