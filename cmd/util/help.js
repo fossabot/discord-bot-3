@@ -1,6 +1,5 @@
 const commando = require("@iceprod/discord.js-commando");
 const newEmbed = require("../../embed");
-const fs = require("fs");
 const walkSync = require("walk-sync");
 const path = require("path");
 const { Collection } = require("discord.js");
@@ -76,12 +75,14 @@ module.exports = class HelpCommand extends commando.Command {
             const requestedCommand = cmd.command;
             const command = langHelp ? langHelp[requestedCommand.name] || requestedCommand : requestedCommand;
             embed
-                .setTitle(`${command.name} (${command.groupID ? command.groupID : lang.help.default}) ${requestedCommand.guildOnly ? " " + lang.help.serverOnly : ""}${requestedCommand.nsfw && (command.group ? command.group !== "NSFW" : true) ? " " + lang.help.nsfw : ""}`)
+                .setTitle(`${command.name} (${command.groupID ? command.groupID : command.group ? command.group : lang.help.default}) ${requestedCommand.guildOnly ? " " + lang.help.serverOnly : ""}${requestedCommand.nsfw && (command.group ? command.group !== "NSFW" : true) ? " " + lang.help.nsfw : ""}`)
                 .setDescription(command.description)
                 .addField(lang.help.format, `${msg.anyUsage(`${command.name}${command.format ? ` ${command.format}` : ""}`)}`);
 
             if(command.aliases.length) embed.addField(lang.help.aliases, command.aliases.join(", "));
             if(command.details) embed.addField(lang.help.details, command.details);
+            if(command.args && !command.arguments) command.arguments = command.args; // just to make sure
+            if(command.arguments) embed.addField(lang.help.arguments, command.arguments.map(arg => `\`${arg.key}\` - ${arg.prompt.substr(0, 1).toUpperCase() + arg.prompt.substr(1)} ${arg.default ? "(" + lang.help.defaultArg + " `" + arg.default + "`)" : ""}`).join("\n"));
             if(command.examples && command.examples.length > 0) embed.addField(command.examplesName || lang.help.examples, command.examples.map(e => `\`${e}\``).join("\n"));
         }
 
