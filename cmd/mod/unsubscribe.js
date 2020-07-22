@@ -16,14 +16,6 @@ module.exports = class Unsubscribe extends commando.Command {
                     validate(val) {
                         return !Number.isNaN(BigInt(val));
                     },
-                    key: "guild",
-                    prompt: "what is the guild ID to unsubscribe from?"
-                },
-                {
-                    type: "string",
-                    validate(val) {
-                        return !Number.isNaN(BigInt(val));
-                    },
                     key: "channel",
                     prompt: "what is the channel ID of that guild to unsubscribe from?"
                 }
@@ -31,9 +23,9 @@ module.exports = class Unsubscribe extends commando.Command {
         });
     }
 
-    async run(msg, { guild, channel }) {
-        var [deleted] = await pool.query("DELETE FROM subscriptions WHERE guild=? AND target=? AND channel=? AND target_channel=?",
-            [guild, msg.guild.id, channel, msg.channel.id]);
+    async run(msg, { channel }) {
+        var [deleted] = await pool.query("DELETE FROM subscriptions WHERE target=? AND channel=? AND target_channel=?",
+            [msg.guild.id, channel, msg.channel.id]);
         if(deleted.affectedRows) {
             var channelName = "Channel " + channel;
             try {
