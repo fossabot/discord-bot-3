@@ -1,5 +1,6 @@
 const commando = require("@iceprod/discord.js-commando");
 const fs = require("fs");
+const path = require("path");
 require("colors");
 
 module.exports = class Settings extends commando.Command {
@@ -27,18 +28,17 @@ module.exports = class Settings extends commando.Command {
 
     async run(msg, cmd) {
         try {
-            const fileName = "../../config.json";
-            const file = require(fileName);
+            const fileName = "config.json";
+            const file = require(path.join(__dirname, "/../../config.json"));
 
             file[cmd.key] = cmd.value;
-
             fs.writeFile(fileName, JSON.stringify(file, null, 4), err => {
                 if(err) return console.error(err);
                 console.log("[EVENT] config.json edited".yellow);
                 msg.say("Done!");
             });
         } catch(e) {
-            throw new Error();
+            throw new Error(e);
         }
     }
 };
