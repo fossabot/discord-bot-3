@@ -55,12 +55,12 @@ client.setProvider(
 client.config = config;
 
 {
-    let loadedCommands = new Map();
-    
+    const loadedCommands = new Map();
+
     client.on("commandRegister", c => {
         loadedCommands.set(c.name, c);
     });
-    
+
     client.on("ready", async () => {
         var groups = new Map();
         for(const [, command] of loadedCommands) {
@@ -72,7 +72,7 @@ client.config = config;
         for(const [group, length] of groups) {
             console.log(`[LOAD] Found \u001b[37;1m${length.toString().padStart(2, " ")}\u001b[0m commands in \u001b[36m${group.id}\u001b[0m`);
         }
-        
+
         console.log("[EVENT]\u001b[37;1m Ready!\u001b[0m");
     });
 }
@@ -187,58 +187,58 @@ client.once("providerReady", async p => {
 
 client.once("ready", () => {
     if(config.channel) {
-        (async() => {
+        (async () => {
             try {
                 var ch = await client.channels.fetch(config.channel);
             } catch(e) {
                 return console.warn("Coudln't fetch log channel");
             }
-            
+
             client.on("guildCreate", g => {
                 ch.send({
                     embed: {
-                        title: "New guild - " + g.title,
+                        title: "New guild - " + g.name,
                         description: "Members: " + g.memberCount
                     }
                 });
             });
-            
+
             client.on("guildDelete", g => {
                 ch.send({
                     embed: {
-                        title: "Guild removed - " + g.title,
+                        title: "Guild removed - " + g.name,
                         description: "Members: " + g.memberCount
                     }
                 });
             });
-            
+
             client.on("error", error => {
                 ch.send({
                     embed: {
                         title: error.name,
-                        description: error.message.substr(0, 1024)
+                        description: (error.message + "\n" + error.stack).substr(0, 1024)
                     }
                 });
             });
-            
+
             client.on("commandError", (cmd, err, msg) => {
                 ch.send({
                     embed: {
                         title: cmd.name + " - " + err.name,
-                        description: err.message.substr(0, 1024),
+                        description: (err.message + "\n" + err.stack).substr(0, 1024),
                         footer: {
                             text: msg.guild.name
                         }
                     }
-                })
+                });
             });
-            
+
             process.on("unhandledRejection", async e => {
                 try {
                     await ch.send({
                         embed: {
                             title: "Rejection - " + e.name,
-                            description: e.message.substr(0, 1024)
+                            description: (e.message + "\n" + e.stack).substr(0, 1024)
                         }
                     });
                 } catch(e) {
