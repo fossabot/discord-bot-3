@@ -266,7 +266,7 @@ module.exports = class Logs extends commando.Command {
                     ...log,
                     ...data
                 };
-                await msg.guild.settings.set("logs.channels." + logID, logs[logID]);a
+                await msg.guild.settings.set("logs.channels." + logID, logs[logID]);
                 return true;
             }
         }
