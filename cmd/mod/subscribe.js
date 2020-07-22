@@ -63,7 +63,7 @@ module.exports = class Subscribe extends commando.Command {
 
             msg.edit(`**${omsg.member.displayName}** has added **${ch.name}** to this channel. It's most important updates will show up here.`);
         } catch(e) {
-            console.log("[ERROR]", e);
+            console.error("[ERROR]", e);
             this.client.emit("commandError", this, e, msg);
             msg.edit("Couldn't add that channel here. Contact TechmandanCZ#0135 for more information.");
         }

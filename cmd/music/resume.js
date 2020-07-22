@@ -25,7 +25,7 @@ module.exports = class Resume extends commando.Command {
             await msg.guild.music.resume();
             msg.channel.send("Resumed");
         } catch(e) {
-            console.log(e);
+            console.error(e);
 
             msg.channel.send("Couldn't resume playback as nothing is playing");
         }

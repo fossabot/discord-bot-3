@@ -25,7 +25,7 @@ module.exports = class Pause extends commando.Command {
             await msg.guild.music.pause();
             msg.channel.send("Paused");
         } catch(e) {
-            console.log(e);
+            console.error(e);
 
             msg.channel.send("Couldn't pause playback as nothing is playing");
         }

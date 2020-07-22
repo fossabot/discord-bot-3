@@ -21,7 +21,7 @@ module.exports = async msg => {
             var ch = await msg.client.channels.fetch(channel.target_channel);
             ch.send(msg);
         } catch(e) {
-            console.log("[SUBSCRIPTION-SEND] Couldn't send to " + channel.target_channel, e);
+            console.error("[SUBSCRIPTION-SEND] Couldn't send to " + channel.target_channel, e);
         }
     }
 };

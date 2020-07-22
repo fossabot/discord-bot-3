@@ -149,7 +149,7 @@ class Player {
 
                 return await guild.settings.set("music.queue", queue);
             } catch(e) {
-                console.log(e);
+                console.error(e);
             }
         } else {
             var possibles = await this.listVideos(url);
