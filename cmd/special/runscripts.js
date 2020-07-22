@@ -1,7 +1,7 @@
 const commando = require("@iceprod/discord.js-commando");
 const fs = require("fs");
 const { exec } = require("child_process");
-const colors = require("colors");
+require("colors");
 
 module.exports = class runscripts extends commando.Command {
     constructor(client) {
