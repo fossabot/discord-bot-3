@@ -36,6 +36,8 @@ module.exports = {
         serverOnly: "(Usable only in servers)",
         nsfw: "(NSFW)",
         default: "Essentials",
+        arguments: "Arguments",
+        defaultArg: "Default:",
         format: "Format",
         aliases: "Aliases",
         details: "Details",
