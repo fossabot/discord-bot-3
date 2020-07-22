@@ -16,5 +16,6 @@ module.exports = class reloadStructures extends commando.Command {
     run(msg) {
         delete require.cache[path.join(__dirname, "../../structures/index.js")];
         require("../../structures/index");
+        msg.reply("Done");
     }
 };
