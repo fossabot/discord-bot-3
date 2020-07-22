@@ -194,22 +194,24 @@ client.login(config.token);
 
 client.once("ready", async () => {
     const activity = await client.provider.get("global", "status");
-    client.user.setActivity(
-        activity.name,
-        { type: activity.type }
-    );
+    if(activity) {
+        client.user.setActivity(
+            activity.name,
+            { type: activity.type }
+        );
+    }
     if(config.channel) {
         (async () => {
             try {
                 var ch = await client.channels.fetch(config.channel);
             } catch(e) {
-                return console.warn("Coudln't fetch log channel");
+                return console.warn("Couldn't fetch log channel".yellow);
             }
 
             client.on("guildCreate", g => {
                 ch.send({
                     embed: {
-                        title: "New guild - " + g.title,
+                        title: "New guild - " + g.name,
                         description: "Members: " + g.memberCount
                     }
                 });
@@ -218,7 +220,7 @@ client.once("ready", async () => {
             client.on("guildDelete", g => {
                 ch.send({
                     embed: {
-                        title: "Guild removed - " + g.title,
+                        title: "Guild removed - " + g.name,
                         description: "Members: " + g.memberCount
                     }
                 });
