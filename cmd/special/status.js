@@ -1,5 +1,5 @@
 const commando = require("@iceprod/discord.js-commando");
-const { shortNumber } = require("../../utils");
+const { shortNumber, capitalizeFirstLetter } = require("../../utils");
 
 module.exports = class Status extends commando.Command {
     constructor(client) {
@@ -36,17 +36,19 @@ module.exports = class Status extends commando.Command {
                 guilds++;
                 users += guild[1].memberCount;
             }
+            var vars = {
+                users: users,
+                guilds: guilds,
+                servers: guilds
+            };
         }
 
-        const name = cmd.name
-            .replace(/\{\{users\}\}/gi, () => {
-                done += ("\nUsers: " + users);
-                return shortNumber(users);
-            })
-            .replace(/\{\{(guilds|servers)\}\}/gi, () => {
-                done += ("\nGuilds: " + guilds);
-                return shortNumber(guilds);
-            });
+        const name = cmd.name.replace(/(?<=\{\{)[\w.]*?(?=\}\})/gi, m => {
+            m = m.toLowerCase();
+            if(!vars[m]) return m;
+            done += (`\n**${capitalizeFirstLetter(m)}**: ${shortNumber(vars[m])}`);
+            return shortNumber(vars[m]);
+        }).replace(/[{}]/g, "");
 
         const status = {
             name: name,
