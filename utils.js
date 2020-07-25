@@ -286,6 +286,10 @@ function escapeRegExp(string) { // https://stackoverflow.com/questions/3446170/e
     return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); // $& means the whole matched string
 }
 
+function capitalizeFirstLetter(s) {
+    return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
+}
+
 module.exports = {
     shortNumber,
     insertAt,
@@ -301,5 +305,6 @@ module.exports = {
     hslToHex,
     pieChart,
     chart,
-    escapeRegExp
+    escapeRegExp,
+    capitalizeFirstLetter
 };
