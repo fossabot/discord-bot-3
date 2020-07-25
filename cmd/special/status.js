@@ -29,7 +29,8 @@ module.exports = class Status extends commando.Command {
     async run(msg, cmd) {
         let done = "Done!";
 
-        if(cmd.name.match(/\{\{[\w.]*?\}\}/g)) {
+        const matches = cmd.name.match(/\{\{[\w.]*?\}\}/g);
+        if(matches) {
             var users = 0;
             var guilds = 0;
             for(const guild of this.client.guilds.cache) {
@@ -55,7 +56,7 @@ module.exports = class Status extends commando.Command {
             type: cmd.type.toUpperCase()
         };
 
-        await msg.client.provider.set("global", "status", status);
+        await msg.client.provider.set("global", "status", { ...status, name: cmd.name });
         msg.client.user.setActivity(status.name, { type: status.type });
 
         msg.say(done);

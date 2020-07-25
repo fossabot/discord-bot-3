@@ -6,6 +6,7 @@ const Snoowrap = require("snoowrap");
 const requireAll = require("require-all");
 // eslint-disable-next-line no-unused-vars
 require("colors");
+const { shortNumber } = require("./utils");
 
 var dbl;
 
@@ -190,16 +191,49 @@ for(var inhibitor of inhibitors) {
     client.dispatcher.addInhibitor(inhibitor);
 }
 
+async function statusUpdate() {
+    const activity = await client.provider.get("global", "status");
+    if(!activity) return;
+    const name = activity.name;
+    if(!name.match(/\{\{[\w.]*?\}\}/g)) return;
+
+    var users = 0;
+    var guilds = 0;
+    for(const guild of client.guilds.cache) {
+        guilds++;
+        users += guild[1].memberCount;
+    }
+    var vars = {
+        users: users,
+        guilds: guilds,
+        servers: guilds
+    };
+
+    name.replace(/(?<=\{\{)[\w.]*?(?=\}\})/gi, m => {
+        m = m.toLowerCase();
+        if(!vars[m]) return m;
+        return shortNumber(vars[m]);
+    }).replace(/[{}]/g, "");
+
+    const status = {
+        name: name,
+        type: activity.type
+    };
+
+    client.user.setActivity(status.name, { type: status.type });
+}
+
+client.on("guildCreate", () => {
+    statusUpdate();
+});
+client.on("guildDelete", () => {
+    statusUpdate();
+});
+
 client.login(config.token);
 
 client.once("ready", async () => {
-    const activity = await client.provider.get("global", "status");
-    if(activity) {
-        client.user.setActivity(
-            activity.name,
-            { type: activity.type }
-        );
-    }
+    statusUpdate();
     if(config.channel) {
         (async () => {
             try {
