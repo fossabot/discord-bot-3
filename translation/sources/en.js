@@ -9,6 +9,7 @@ module.exports = {
         stars: "Stars"
     },
     general: {
+        error: "An error occured",
         author: "Author",
         downloads: "Downloads",
         downloaded: "Downloaded",

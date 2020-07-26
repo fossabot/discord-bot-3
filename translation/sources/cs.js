@@ -9,6 +9,7 @@ module.exports = {
         stars: "Hvězdy"
     },
     general: {
+        error: "Nastala chyba",
         author: "Autor",
         downloads: "Počet stažení",
         downloaded: "Staženo",
@@ -23,7 +24,7 @@ module.exports = {
         donor_only: "Tento příkaz je dostupný pouze pro dárce.",
         tbd: "Již brzy",
         color: "Barva",
-        color_invalid: "Invalid color",
+        color_invalid: "Špatná barva",
         perms: "Nemáte dostatečná práva pro tuto akci.",
         limit: "Prosím vyberte číslo mezi %s a %n",
         months: ["led", "úno", "bře", "dub", "kvě", "čvn", "čvc", "srp", "zář", "lis", "pro", "Dec"]
