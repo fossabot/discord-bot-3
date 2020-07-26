@@ -33,7 +33,7 @@ module.exports = class Ascii extends commando.Command {
             font = "Doom";
         }
         figlet.text(text, font, (err, rendered) => {
-            if(err) return msg.channel.send("An error occured");
+            if(err) return msg.channel.send(lang.general.error);
             rendered = rendered.trimRight();
             msg.channel.send("```\n" + rendered + "\n```");
         });

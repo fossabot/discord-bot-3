@@ -52,51 +52,48 @@ module.exports = class Poke extends commando.Command {
             return;
         }
         try {
-            var pokemon = got(`https://pokeapi.co/api/v2/pokemon/${this.cmd.poke.toLowerCase()}`).then(res => {
-              var json = JSON.parse(res.body);
-              var types = [];
-              var type = json.types;
-              type.forEach((item, i) => {
-                types.push(`**${(item.type.name[0].toUpperCase() +  item.type.name.slice(1)).replace("-"," ")}**`);
-              });
-              var abils = [];
-              var abil = json.abilities;
-              abil.forEach((item, i) => {
+            got(`https://pokeapi.co/api/v2/pokemon/${this.cmd.poke.toLowerCase()}`).then(res => {
+                var json = JSON.parse(res.body);
+                var types = [];
+                var type = json.types;
+                type.forEach((item, i) => {
+                    types.push(`**${(item.type.name[0].toUpperCase() + item.type.name.slice(1)).replace("-", " ")}**`);
+                });
+                var abils = [];
+                var abil = json.abilities;
+                abil.forEach((item, i) => {
+                    abils.push(`**${(item.ability.name[0].toUpperCase() + item.ability.name.slice(1)).replace("-", " ")}**`); // lazy approch
+                });
 
-                abils.push(`**${(item.ability.name[0].toUpperCase() +  item.ability.name.slice(1)).replace("-"," ")}**`); // lazy approch
-              });
+                var name = (json.name[0].toUpperCase() + json.name.slice(1)).replace("-", " ");
+                /* First Embed - Normal Statistics */
+                var embed = newEmbed();
+                embed.setTitle(("000" + json.id).substr(-3) + " - " + name);
+                embed.addField("Type", types.join("/"), true);
+                embed.addField("Weight", json.weight, true);
+                embed.addField("Height", json.height, true);
+                embed.addField("Abilities", abils.join(", "));
 
-              var name = (json.name[0].toUpperCase() +  json.name.slice(1)).replace("-"," ");
-              /* First Embed - Normal Statistics */
-              var embed = newEmbed();
-              embed.setTitle(('000' + json.id).substr(-3) + " - " + name);
-              embed.addField("Type", types.join("/"),true);
-              embed.addField("Weight", json.weight,true);
-              embed.addField("Height",json.height,true);
-              embed.addField("Abilities",abils.join(", "));
+                /* Second Embed - Picture */
+                var embed2 = newEmbed();
+                embed2.setTitle(`Picture of ${name}`);
+                embed2.setImage(json.sprites.front_default);
 
-              /* Second Embed - Picture */
-              var embed2 = newEmbed();
-              embed2.setTitle(`Picture of ${name}`)
-              embed2.setImage(json.sprites.front_default);
+                /* Third Embed - Shiny Picture */
+                var embed3 = newEmbed();
+                embed3.setTitle(`Picture of Shiny ${name}`);
+                embed3.setImage(json.sprites.front_shiny);
 
-              /* Third Embed - Shiny Picture */
-              var embed3 = newEmbed();
-              embed3.setTitle(`Picture of Shiny ${name}`)
-              embed3.setImage(json.sprites.front_shiny);
-
-              this.msg.channel.send(embed);
-              this.msg.channel.send(embed2);
-              this.msg.channel.send(embed3);
-            })
+                this.msg.channel.send(embed);
+                this.msg.channel.send(embed2);
+                this.msg.channel.send(embed3);
+            });
         } catch(e) {
             var embed = newEmbed();
             embed.setTitle("Not Found");
             embed.setDescription(`Pokemon **${this.cmd.poke}** not found. Please note that our bot still not support Sword and Shield Pokemons`);
             this.msg.channel.send(embed);
-            return;
         }
-
     }
 
     help() {

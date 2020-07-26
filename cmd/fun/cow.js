@@ -25,7 +25,7 @@ module.exports = class Cow extends commando.Command {
 
     run(msg, cmd) {
         var saying = cmd.variant === "say";
-        var{ text } = cmd;
+        var { text } = cmd;
 
         text = text
             .replace(/\\`/gi, "")

@@ -20,7 +20,7 @@ module.exports = class AFK extends commando.Command {
     }
 
     async run(msg, cmd) {
-        msg.client.user.setAFK(cmd.afk || msg.client.user.presence.status === "idle" ? false : true);
+        msg.client.user.setAFK(cmd.afk || msg.client.user.presence.status !== "idle");
         msg.say("Done!");
     }
 };

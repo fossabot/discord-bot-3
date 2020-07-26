@@ -14,12 +14,12 @@ module.exports = class update extends commando.Command {
         });
     }
 
-    run(msg) {        
+    run(msg) {
         exec("./scripts/update.sh", async (err, sout, serr) => {
             await msg.channel.send("Done");
-            if(err) await msg.channel.send("```\n" + err.message + "```");
-            if(sout) await msg.channel.send("```\n" + sout + "```");
-            if(serr) await msg.channel.send("```\n" + serr + "```"); 
+            if(err)await msg.channel.send("```\n" + err.message + "```");
+            if(sout)await msg.channel.send("```\n" + sout + "```");
+            if(serr)await msg.channel.send("```\n" + serr + "```");
         });
     }
 };

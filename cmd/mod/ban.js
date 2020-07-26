@@ -37,7 +37,7 @@ module.exports = class Ban extends Command {
         if(msg.guild.member(cmd.user)) {
             if(cmd.user === this.client.user) return msg.say(lang.ban.bot);
             if(msg.author === cmd.user) return msg.say(lang.ban.self);
-            if(msg.member.guild.me.roles.highest.comparePositionTo(msg.guild.member(cmd.user).roles.highest) <= 0 || !msg.guild.member(cmd.user).bannable) return msg.say(ban.bot.low);
+            if(msg.member.guild.me.roles.highest.comparePositionTo(msg.guild.member(cmd.user).roles.highest) <= 0 || !msg.guild.member(cmd.user).bannable) return msg.say(lang.ban.bot.low);
             if(msg.member.roles.highest.comparePositionTo(msg.guild.member(cmd.user).roles.highest) <= 0) return msg.say(lang.ban.low);
         }
 
