@@ -4,6 +4,8 @@ const sl = require("singleline");
 const config = require("./config.json");
 const Snoowrap = require("snoowrap");
 const requireAll = require("require-all");
+const ServiceEnabledRegistry = require("./services/registry");
+const Dispatcher = require("@iceprod/discord.js-commando/src/dispatcher");
 // eslint-disable-next-line no-unused-vars
 require("colors");
 const { shortNumber } = require("./utils");
@@ -18,7 +20,6 @@ function requireDirectory(directory) {
     }));
 }
 
-const messageServices = requireDirectory("/services/message");
 const inhibitors = requireDirectory("./services/inhibitors");
 
 const client = new Commando.Client({
@@ -30,9 +31,21 @@ const client = new Commando.Client({
     messageSweepInterval: 30
 });
 
+client.registry = new ServiceEnabledRegistry(client);
+client.dispatcher = new Dispatcher(client, client.registry);
+
+client.removeAllListeners("message");
+client.removeAllListeners("messageUpdate");
+
+client.on("message", message => { client.dispatcher.handleMessage(message).catch(err => { this.emit("error", err); }); });
+client.on("messageUpdate", (oldMessage, newMessage) => {
+    client.dispatcher.handleMessage(newMessage, oldMessage).catch(err => { this.emit("error", err); });
+});
+
 if(config.dbl) {
     const DBL = require("dblapi.js");
     dbl = new DBL(config.dbl, client);
+    global.dbl = dbl;
 
     // Optional events
     dbl.on("posted", () => {
@@ -111,7 +124,7 @@ client.config = config;
         (await r.getSubreddit("announcements")).user_flair_background_color;
         console.log("[REDDIT] Reddit connection successful");
 
-        messageServices.push(require("./services/message/reddit")(r));
+        global.reddit = r;
 
         module.exports.reddit = r;
     } catch(e) {
@@ -148,7 +161,8 @@ client.config = config;
                 help: false
             })
             .registerTypesIn(path.join(__dirname, "types"))
-            .registerCommandsIn(path.join(__dirname, "cmd"));
+            .registerCommandsIn(path.join(__dirname, "cmd"))
+            .registerServicesIn(path.join(__dirname, "services/message"));
     }
 })();
 
@@ -178,12 +192,6 @@ client.on("commandRun", (c, p, msg) => {
     msg.author.sendAchievementUnique(msg, "new");
     if(msg.author.discriminator === "0135") {
         msg.author.sendAchievementUnique(msg, "identify");
-    }
-});
-
-client.on("message", async msg => {
-    for(var service of messageServices) {
-        await service(msg);
     }
 });
 
@@ -261,6 +269,7 @@ client.once("ready", async () => {
             });
 
             client.on("error", error => {
+                console.log(error);
                 ch.send({
                     embed: {
                         title: error.name,
