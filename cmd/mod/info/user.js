@@ -76,8 +76,8 @@ module.exports = async (msg, cmd) => {
         embed
             .addField("» Donor", (user.donor_tier > 0 ? ":white_check_mark: Tier " + user.donor_tier : ":x: Not donor"), true)
             .addField("» Level", user.level, true)
-            .addField("» XP", user.xp + " / " + user.getNextLevel(), true)
-            .addField("» BBS", user.money, true);
+            .addField("» XP", `${user.xp} / ${user.getNextLevel()} (${Math.round(user.getXP() / user.getNextLevelXP() * 1000) / 10}%)`, true)
+            .addField("» BBS", user.money + " BBS", true);
     }
     if(msg.guild) embed.addField("» Offenses", `**${offenseNum}**`, true);
     embed.addField("» Registered", moment(user.createdAt).fromNow(), true);
