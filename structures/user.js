@@ -22,18 +22,14 @@ Structures.extend("User", (User) => {
 
     return class DBLUser extends User {
         async hasVoted() {
-            if(!dbl) return true;
-            return await dbl.hasVoted(this.id);
+            if(!global.dbl) return true;
+            return await global.dbl.hasVoted(this.id);
         }
 
-        async getUser(uuid) {
+        async getUser() {
             var query;
-            if(uuid) {
-                query = "SELECT * FROM users WHERE uuid=?";
-            } else {
-                query = "SELECT * FROM users WHERE discord=?";
-            }
-            var [results] = await pool.query(query, [uuid || this.id]);
+            query = "SELECT * FROM users WHERE discord=?";
+            var [results] = await pool.query(query, [this.id]);
 
             if(results === undefined) return null;
 
@@ -48,10 +44,9 @@ Structures.extend("User", (User) => {
         }
 
         async createUser() {
-            var uuid = "unhex(replace(uuid(),'-',''))";
-            var query = "INSERT INTO users (uuid_bin, discord) VALUE (?, ?)";
-            var [results] = await pool.query(query, [uuid, this.id]);
-            var query2 = "SELECT  * FROM users WHERE id=?";
+            var query = "INSERT INTO users (discord) VALUE (?)";
+            var [results] = await pool.query(query, [this.id]);
+            var query2 = "SELECT * FROM users WHERE id=?";
             var [user] = await pool.query(query2, [results.insertId]);
             return user[0];
         }
@@ -78,52 +73,27 @@ Structures.extend("User", (User) => {
             return user;
         }
 
-        getNextLevel(xp = this.xp) {
-            var i = 0;
-            var minDiff = 1000;
-            var ans;
-
-            for(i in xpBreakpoints) {
-                var m = Math.abs(xp - xpBreakpoints[i]);
-                if(m < minDiff) {
-                    minDiff = m;
-                    ans = xpBreakpoints[i];
-                }
-            }
-
-            return parseInt(ans);
+        getNextLevel() {
+            var level = this.level;
+            return xpBreakpoints[level + 1];
         }
 
-        getPrevLevel(xp = this.xp) {
-            var i = 0;
-            var minDiff = 1000;
-            var ans;
+        getNextLevelXP() {
+            var level = this.level;
+            return xpBreakpoints[level + 1] - xpBreakpoints[level];
+        }
 
-            for(i in xpBreakpoints) {
-                var m = Math.abs(xp - xpBreakpoints[i - 1]);
-                if(m < minDiff) {
-                    minDiff = m;
-                    ans = xpBreakpoints[i - 1];
-                }
-            }
-
-            return parseInt(ans) + 1;
+        getXP() {
+            var level = this.level;
+            return this.xp - xpBreakpoints[level];
         }
 
         get level() {
-            var i = 0;
-            var minDiff = 1000;
-            var ans;
-
-            for(i in xpBreakpoints) {
-                var m = Math.abs(this.xp - xpBreakpoints[i]);
-                if(m < minDiff) {
-                    minDiff = m;
-                    ans = i;
-                }
+            for(var breakPoint in xpBreakpoints) {
+                // eslint-disable-next-line keyword-spacing
+                if(xpBreakpoints[breakPoint] > this.xp) return Number(breakPoint) - 1;
             }
-
-            return parseInt(ans) + 1;
+            return Infinity;
         }
 
         get money() {
@@ -221,7 +191,7 @@ Structures.extend("User", (User) => {
                 if(a.code === code) hasAchievement = true;
             });
             if(!hasAchievement) {
-                this.awardAchievment(code, msg);
+                await this.awardAchievment(code, msg);
                 achievmentsAwarded = await this.achievments();
                 msg.channel.send(this.sendAchievment(achievmentsAwarded[0], msg));
             }
