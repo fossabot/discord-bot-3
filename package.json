@@ -6,6 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",
+    "eslint": "eslint *.js cmd/**/*.js managers/*.js services/*.js services/**/*.js types/*.js",
     "format": "eslint *.js cmd/**/*.js managers/*.js services/*.js services/**/*.js types/*.js --fix || true"
   },
   "author": "",
@@ -57,6 +58,7 @@
     "ytdl-core": "^2.1.1"
   },
   "devDependencies": {
+    "babel-eslint": "^10.1.0",
     "eslint": "^6.8.0",
     "eslint-config-standard": "^14.1.1",
     "eslint-plugin-import": "^2.20.2",
