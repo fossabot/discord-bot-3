@@ -156,7 +156,7 @@ class MySQLProvider extends SettingProvider {
         if(!key) {
             return settings || defVal;
         }
-        if(settings[key]) {
+        if(settings[key] !== undefined) {
             return settings[key];
         } else {
             return defVal;
