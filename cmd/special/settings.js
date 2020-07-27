@@ -3,12 +3,12 @@ const fs = require("fs");
 const path = require("path");
 require("colors");
 
-module.exports = class Settings extends commando.Command {
+module.exports = class BotSettings extends commando.Command {
     constructor(client) {
         super(client, {
-            name: "settings",
+            name: "botsettings",
             group: "special",
-            memberName: "settings",
+            memberName: "botsettings",
             description: "Edit config.json settings",
             ownerOnly: true,
             args: [
