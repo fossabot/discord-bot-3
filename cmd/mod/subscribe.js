@@ -32,15 +32,17 @@ module.exports = class Subscribe extends commando.Command {
 
         var target = msg.guild.id;
         var targetChannel = msg.channel.id;
-        var guild = ch.guild.id;
+        var guild = ch.guild;
 
         if(!guild) {
             return msg.edit("Selected channel is not in any server");
         }
 
+        guild = guild.id;
+
         var [channels] = await pool.query("SELECT * FROM subscription_channels WHERE guild=?", [guild]);
 
-        if(~channels.findIndex(val => val.channel === channel)) {
+        if(channels.findIndex(val => val.channel === channel) === -1) {
             return msg.edit("Only the following channels are available to subscription from that server:\n" +
                 channels.map(val => "<#" + val.channel + "> (" + val.channel + ")").join());
         }
