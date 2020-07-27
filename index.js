@@ -37,7 +37,7 @@ client.dispatcher = new Dispatcher(client, client.registry);
 client.removeAllListeners("message");
 client.removeAllListeners("messageUpdate");
 
-client.on("message", message => { client.dispatcher.handleMessage(message).catch(err => { this.emit("error", err); }); });
+client.on("message", message => { client.dispatcher.handleMessage(message).catch(err => { client.emit("error", err); }); });
 client.on("messageUpdate", (oldMessage, newMessage) => {
     client.dispatcher.handleMessage(newMessage, oldMessage).catch(err => { this.emit("error", err); });
 });
