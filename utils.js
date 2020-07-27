@@ -290,7 +290,17 @@ function capitalizeFirstLetter(s) {
     return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
 }
 
+// For reference, see https://wiki.aztec.bot/en/developers/flags
+const flags = {
+    owner: 1,
+    developer: 1<<1,
+    admin: 1<<2,
+    bug_hunter: 1<<3,
+    beta_tester: 1<<4
+};
+
 module.exports = {
+    flags,
     shortNumber,
     insertAt,
     suffix,
