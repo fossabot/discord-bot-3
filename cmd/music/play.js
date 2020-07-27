@@ -24,12 +24,23 @@ module.exports = class Play extends commando.Command {
             return msg.channel.send("You can't use this command as you don't have premium");
         }
         if(!msg.guild.voice) {
-            return msg.channel.send("Bot is not connected to a voice channel. Join a music channel and invoke `join` command");
+            if(!msg.member.voice) {
+                msg.channel.send("You're not in a voice channel!");
+                return;
+            }
+            try {
+                await msg.member.voice.channel.join();
+                msg.channel.send("Joined voice channel.");
+            } catch(e) {
+                return msg.channel.send("Couldn't join your voice channel. Make sure the bot has permission to join");
+            }
         }
         try {
             await msg.guild.music.play(msg, url);
         } catch(e) {
-            msg.channel.send("Bot is not connected to a voice channel. Join a music channel and invoke `join` command");
+            console.log(e);
+            this.client.emit("commandError", this, e, msg);
+            msg.channel.send("Something went wrong.");
         }
     }
 };
