@@ -107,7 +107,7 @@ class MySQLProvider extends SettingProvider {
                         continue;
                     }
 
-                    this.setupGuildCommand(client.guilds.get(guild), command, settings);
+                    this.setupGuildCommand(client.guilds.resolve(guild), command, settings);
                 }
             })
             .set("groupRegister", (group) => {
@@ -116,7 +116,7 @@ class MySQLProvider extends SettingProvider {
                         continue;
                     }
 
-                    this.setupGuildGroup(client.guilds.get(guild), group, settings);
+                    this.setupGuildGroup(client.guilds.resolve(guild), group, settings);
                 }
             });
 
