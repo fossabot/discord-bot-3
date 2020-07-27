@@ -32,7 +32,7 @@ module.exports = class Subscribe extends commando.Command {
 
         var target = msg.guild.id;
         var targetChannel = msg.channel.id;
-        var guild = ch.guild;
+        var guild = ch.guild.id;
 
         if(!guild) {
             return msg.edit("Selected channel is not in any server");
