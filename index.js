@@ -254,7 +254,10 @@ client.once("ready", async () => {
                 ch.send({
                     embed: {
                         title: "New guild - " + g.name,
-                        description: "Members: " + g.memberCount
+                        description: "Members: " + g.memberCount,
+                        footer: {
+                            text: g.owner ? g.owner.displayName : g.ownerID
+                        }
                     }
                 });
             });
@@ -263,7 +266,10 @@ client.once("ready", async () => {
                 ch.send({
                     embed: {
                         title: "Guild removed - " + g.name,
-                        description: "Members: " + g.memberCount
+                        description: "Members: " + g.memberCount,
+                        footer: {
+                            text: g.owner ? g.owner.displayName : g.ownerID
+                        }
                     }
                 });
             });
