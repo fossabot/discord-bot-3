@@ -51,6 +51,15 @@ Structures.extend("User", (User) => {
             return user[0];
         }
 
+        async boostedGuild(guild) {
+            if(typeof guild !== "string") guild = guild.id;
+            await this.fetchUser();
+
+            var [res] = await pool.query("SELECT levels FROM boosts WHERE guild = ? AND user = ?", [guild, this.db_id]);
+            if(res && res[0]) return res[0].levels;
+            return false;
+        }
+
         /**
          * Fetches user from DB.
          */
@@ -71,6 +80,10 @@ Structures.extend("User", (User) => {
             }
 
             return user;
+        }
+
+        saveFlags() {
+            return pool.query("UPDATE users SET flags = ? WHERE id = ?", [this.flags, this.db_id]);
         }
 
         getNextLevel() {

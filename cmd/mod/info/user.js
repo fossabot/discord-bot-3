@@ -1,5 +1,6 @@
 const newEmbed = require("../../../embed");
 const moment = require("moment");
+const { flags } = require("../../../utils");
 
 function getRoles(msg, user) {
     const roles = msg.guild.member(user).roles.cache.array();
@@ -11,14 +12,30 @@ function getRoles(msg, user) {
 function getStatus(status) {
     switch(status) {
         case "idle":
-            return ":yellow_circle:";
+            return "<:status_idle:737304031436734485> ";
         case "dnd":
-            return ":no_entry:";
+            return "<:status_dnd:737304073451339777>";
         case "online":
-            return ":green_circle:";
+            return "<:status_online:737303957013004329>";
         case "offline":
-            return ":black_circle:";
+            return "<:status_offline:737304154330103918>";
     }
+}
+
+function getFlags(user) {
+    var out = "";
+    for(var flag in flags) {
+        if(!(flags[flag] & user.flags)) continue;
+
+        switch(flag) {
+            case "owner": break;
+            case "developer": out += "<:developer:737304296114094120>"; break;
+            case "admin": out += "<:certified:737303731779010580>"; break;
+            case "bug_hunter": out += "<:bug_hunter:737312211827032084>"; break;
+            case "beta_tester": out += "<:beta_test:737312249923764237>"; break;
+        }
+    }
+    return out;
 }
 
 function getPlatform(status) {
@@ -69,7 +86,7 @@ module.exports = async (msg, cmd) => {
     }
 
     var embed = newEmbed()
-        .setTitle(`${user.tag} ${getStatus(user.presence.status)} ${getPlatform(user.presence.clientStatus)} ${user.bot || user.id === "672165988527243306" ? ":robot:" : ""}`)
+        .setTitle(`${user.tag} ${getStatus(user.presence.status)} ${getPlatform(user.presence.clientStatus)} ${user.bot || user.id === "672165988527243306" ? "<:bot:737305735100366858>" : ""} ${limited ? "" : getFlags(user)}`)
         .setThumbnail(user.avatarURL())
         .addField("» ID", user.id, true);
     if(!limited) {
@@ -77,9 +94,12 @@ module.exports = async (msg, cmd) => {
             .addField("» Donor", (user.donor_tier > 0 ? ":white_check_mark: Tier " + user.donor_tier : ":x: Not donor"), true)
             .addField("» Level", user.level, true)
             .addField("» XP", `${user.xp} / ${user.getNextLevel()} (${Math.round(user.getXP() / user.getNextLevelXP() * 1000) / 10}%)`, true)
-            .addField("» BBS", user.money + " BBS", true);
+            .addField("» BBS", user.money + " BBS", true)
     }
-    if(msg.guild) embed.addField("» Offenses", `**${offenseNum}**`, true);
+    if(msg.guild) {
+        embed.addField("» Boosted", (await user.boostedGuild(msg.guild) ? "Boosted!" : "No"));
+        embed.addField("» Offenses", `**${offenseNum}**`, true);
+    }
     embed.addField("» Registered", moment(user.createdAt).fromNow(), true);
     if(msg.guild && getRoles(msg, user)) {
         embed.addField("» Roles", getRoles(msg, user), true);
