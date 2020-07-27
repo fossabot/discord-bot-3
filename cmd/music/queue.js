@@ -22,9 +22,8 @@ module.exports = class Queue extends commando.Command {
     }
 
     async run(msg, { selected }) {
-        var dbuser = await msg.author.fetchUser();
-        if(!dbuser.donor_tier) {
-            return msg.channel.send("You can't use this command as you don't have premium");
+        if(!await msg.guild.isPremium()) {
+            return msg.channel.send("This guild is not boosted yet. Use `boost` command to boost this server for perks like music and more.");
         }
         var queue = await msg.guild.music.getQueue();
 

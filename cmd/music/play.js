@@ -12,16 +12,16 @@ module.exports = class Play extends commando.Command {
                 {
                     key: "url",
                     type: "string",
-                    prompt: "What music to add?"
+                    prompt: "What music to add?",
+                    default: ""
                 }
             ]
         });
     }
 
     async run(msg, { url }) {
-        var dbuser = await msg.author.fetchUser();
-        if(!dbuser.donor_tier) {
-            return msg.channel.send("You can't use this command as you don't have premium");
+        if(!await msg.guild.isPremium()) {
+            return msg.channel.send("This guild is not boosted yet. Use `boost` command to boost this server for perks like music and more.");
         }
         if(!msg.guild.voice) {
             if(!msg.member.voice) {
@@ -36,7 +36,11 @@ module.exports = class Play extends commando.Command {
             }
         }
         try {
-            await msg.guild.music.play(msg, url);
+            if(url) {
+                await msg.guild.music.play(msg, url);
+            } else {
+                await msg.guild.music.skip(0);
+            }
         } catch(e) {
             console.log(e);
             this.client.emit("commandError", this, e, msg);

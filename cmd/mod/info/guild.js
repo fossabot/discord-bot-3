@@ -30,7 +30,7 @@ function getRegion(region) {
     return "";
 }
 
-module.exports = (msg, cmd) => {
+module.exports = async (msg, cmd) => {
     const embed = newEmbed()
         .setAuthor(msg.author.tag, msg.author.avatarURL())
         .setTitle(msg.guild.name)
@@ -44,6 +44,7 @@ module.exports = (msg, cmd) => {
         .addField("Members", msg.guild.members.cache.size + " :bust_in_silhouette:", true)
         .addField("Humans", msg.guild.members.cache.filter(m => !m.user.bot).size + " :adult:", true)
         .addField("Bots", msg.guild.members.cache.filter(m => m.user.bot).size + " :robot:", true);
+        if(await msg.guild.isPremium()) embed.addField("Premium", "Level: " + await msg.guild.isPremium());
     if(msg.guild.bannerURL()) embed.setImage(msg.guild.bannerURL({ dynamic: true }));
     embed.setFooter(`${embed.footer.text} | Server Created: ${timestampToDate(msg.guild.createdTimestamp)}`);
     return msg.embed(embed);
