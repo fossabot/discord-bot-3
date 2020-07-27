@@ -23,11 +23,11 @@ module.exports = class Play extends commando.Command {
         if(!await msg.guild.isPremium()) {
             return msg.channel.send("This guild is not boosted yet. Use `boost` command to boost this server for perks like music and more.");
         }
+        if(!msg.member.voice || !msg.member.voice.channel) {
+            msg.channel.send("You're not in a voice channel!");
+            return;
+        }
         if(!msg.guild.voice) {
-            if(!msg.member.voice) {
-                msg.channel.send("You're not in a voice channel!");
-                return;
-            }
             try {
                 await msg.member.voice.channel.join();
                 msg.channel.send("Joined voice channel.");
@@ -35,11 +35,34 @@ module.exports = class Play extends commando.Command {
                 return msg.channel.send("Couldn't join your voice channel. Make sure the bot has permission to join");
             }
         }
+        if(!msg.guild.voice.connection) {
+            try {
+                await msg.guild.voice.channel.join();
+            } catch(e) {
+                await msg.member.voice.channel.join();
+            }
+        }
+        try {
+            if(msg.guild.music.isPaused()) {
+                await msg.guild.music.resume();
+                msg.channel.send("Resumed");
+                if(!url) return;
+            }
+        } catch(e) {}
         try {
             if(url) {
                 await msg.guild.music.play(msg, url);
             } else {
-                await msg.guild.music.skip(0);
+                var queue = await msg.guild.music.getQueue();
+                if(!queue.length) {
+                    return msg.channel.send("Nothing to play.");
+                }
+                var current = await msg.guild.music.getPlayingId();
+                if(current >= queue.lengt) {
+                    await msg.guild.music.setPlaying(0);
+                }
+                await msg.guild.music.startPlaying();
+                msg.channel.send("Playing some tunes");
             }
         } catch(e) {
             console.log(e);

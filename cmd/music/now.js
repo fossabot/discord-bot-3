@@ -30,6 +30,7 @@ module.exports = class Now extends commando.Command {
                 msg.guild.music.lastInfo = m;
                 msg.guild.music.channel = msg.channel;
             } catch(e) {
+                console.log(e);
                 msg.channel.send("Couldn't fetch song info");
             }
             return;

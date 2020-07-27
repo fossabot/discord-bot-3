@@ -43,6 +43,6 @@ module.exports = class Queue extends commando.Command {
 
         var me = await msg.channel.send(embed);
 
-        await pages(msg, embed, me, queue, 1, "music in queue", song => `${song.data.title} (Requested by <@!${song.requested}>)`);
+        await pages(msg, embed, me, queue, 1, "music in queue", song => `${song.data.videoDetails.title} (Requested by <@!${song.requested}>)`);
     }
 };

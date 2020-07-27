@@ -29,7 +29,7 @@ module.exports = class Remove extends commando.Command {
         }
         var queue = await msg.guild.music.getQueue();
 
-        queue.splice(selected, length);
+        queue.splice(selected - 1, length);
 
         await msg.guild.settings.set("music.queue", queue);
 

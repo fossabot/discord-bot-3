@@ -50,7 +50,7 @@ class Player {
      * @returns {Number} volume
      */
     async getVolume() {
-        return await this.guild.settings.get("music.volume", 100);
+        return await this.guild.settings.get("music.volume", 1);
     }
 
     /**
@@ -192,7 +192,7 @@ class Player {
                 await guild.settings.set("music.stash", []);
                 var queue = await this.getQueue(guild);
 
-                while(true) {
+                for(var i = 0; i < 10; i++) {
                     try {
                         var data = await ytdl.getInfo(url.videoId);
                         break;
@@ -235,19 +235,22 @@ class Player {
     getEmbed({ data, url, requested }, np = false, pos) {
         var embed = newEmbed();
 
-        embed.setTitle(data.title);
+        embed.setTitle(data.videoDetails.title);
         embed.setAuthor(
-            data.author.name,
-            data.author.avatar,
-            data.author.channel_url
+            data.videoDetails.author.name,
+            data.videoDetails.author.avatar,
+            data.videoDetails.author.channel_url
         );
-        embed.setURL(data.video_url);
+        embed.setURL(data.videoDetails.video_url);
 
-        embed.addField(
-            "Likes",
-            `${data.likes} :+1: / ${data.dislikes} :-1:`,
-            true
-        );
+        if(data.likes) {
+            embed.addField(
+                "Likes",
+                `${data.videoDetails.likes} :+1: / ${data.videoDetails.dislikes} :-1:`,
+                true
+            );
+        }
+
         embed.addField("Requested by", `<@!${requested}>`, true);
         if(pos) embed.addField("Position in queue", pos, true);
 
@@ -276,7 +279,7 @@ class Player {
                     embed.addField(
                         "Length",
                         data.length_seconds > 0
-                            ? humanReadable(data.length_seconds)
+                            ? humanReadable(data.videoDetails.lengthSeconds)
                             : "LIVE",
                         true
                     );
@@ -290,14 +293,14 @@ class Player {
                 } else {
                     embed.addField(
                         "Length",
-                        humanReadable(data.length_seconds)
+                        humanReadable(data.videoDetails.lengthSeconds)
                     );
                 }
             } else {
-                embed.addField("Length", humanReadable(data.length_seconds));
+                embed.addField("Length", humanReadable(data.videoDetails.lengthSeconds));
             }
         } else {
-            embed.addField("Length", humanReadable(data.length_seconds));
+            embed.addField("Length", humanReadable(data.videoDetails.lengthSeconds));
         }
 
         var thumbnails = data.player_response.videoDetails.thumbnail.thumbnails;
@@ -315,21 +318,24 @@ class Player {
         var queue = await this.getQueue();
         if(npid === -1) {
             if(queue.length === 0) return;
-            npid = 1;
+            npid = 0;
+        }
+        if(queue.length === 0) return;
+        if(queue.length >= npid) {
+            npid = 0;
+            await this.setPlaying(0);
         }
         var np = queue[npid];
-        await this.guild.settings.set("music.playing", npid);
+        await this.setPlaying(npid);
 
         if(!this.guild.voice.connection) {
             this.guild.voice.channel.join();
         }
         if(!this.guild.voice.connection.dispatcher) {
             var dispatcher = this.guild.voice.connection.play(
-                ytdl(np.data.video_url, defaultOptions)
+                ytdl(np.data.videoDetails.video_url, defaultOptions)
             );
-            dispatcher.setVolume(
-                await this.guild.settings.get("music.volume", 1)
-            );
+            dispatcher.setVolume(await this.getVolume());
             this.dispatch(dispatcher);
         }
     }
@@ -338,7 +344,6 @@ class Player {
      * @param {Discord.StreamDispatcher} dispatcher
      */
     dispatch(dispatcher) {
-        // var finished = false;
         dispatcher
             .on("start", async () => {
                 if(this.channel) {
@@ -350,24 +355,9 @@ class Player {
                     this.lastInfo = await this.channel.send(
                         this.getEmbed(queue[npid], true, npid)
                     );
-                    /*
-                    if(this.lastInfo) {
-                        this.lastInfo.edit(this.getEmbed(queue[npid], true, npid));
-                    } else {
-                        this.lastInfo = await this.channel.send(this.getEmbed(queue[npid], true, npid));
-                    }
-
-                    /* var i;
-                    i = setInterval(() => {
-                        if(finished) { return clearInterval(i); }
-                        if(!this.lastInfo) { return clearInterval(i); }
-                        if(this.lastInfo.deleted) { return clearInterval(i); }
-                        this.lastInfo.edit(this.getEmbed(queue[npid], true));
-                    }, 2000); */
                 }
             })
             .on("finish", async () => {
-                // finished = true;
                 try {
                     await this.skip(1);
                 } catch(e) {
@@ -393,7 +383,7 @@ class Player {
         }
         var np = queue[npid];
 
-        await this.guild.settings.set("music.playing", npid);
+        this.setPlaying(npid);
 
         if(!this.guild.voice.connection) {
             await this.guild.voice.channel.join();
@@ -402,7 +392,7 @@ class Player {
         var dispatcher = this.guild.voice.connection.play(
             ytdl(np.data.video_url, defaultOptions)
         );
-        dispatcher.setVolume(await this.guild.settings.get("music.volume", 1));
+        dispatcher.setVolume(await this.getVolume());
         this.dispatch(dispatcher);
         return dispatcher;
     }
@@ -429,7 +419,7 @@ class Player {
         }
         var np = queue[npid];
 
-        await this.guild.settings.set("music.playing", npid);
+        await this.setPlaying(npid);
 
         if(!this.guild.voice.connection) {
             await this.guild.voice.channel.join();
