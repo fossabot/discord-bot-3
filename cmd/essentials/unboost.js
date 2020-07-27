@@ -19,9 +19,9 @@ module.exports = class Unboost extends commando.Command {
             return msg.channel.send("Only premium users can boost servers.");
         }
 
-        var [res] = await pool.query("DELETE FROM boosts WHERE user = ? AND guild = ?", [dbuser.db_id, msg.guild.id]);
+        var [res] = await pool.query("DELETE FROM boosts WHERE user = ? AND guild = ?", [msg.author.db_id, msg.guild.id]);
 
-        if(res.affectedRows) {   
+        if(res.affectedRows) {
             msg.channel.send("Boost removed!");
         } else {
             msg.channel.send("You did not boost this guild");

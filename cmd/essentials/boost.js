@@ -21,13 +21,13 @@ module.exports = class Boost extends commando.Command {
 
         const limit = [0, 1, 3][dbuser.donor_tier];
 
-        var [res] = await pool.query("SELECT SUM(levels) AS level FROM boosts WHERE user = ?", [dbuser.db_id]);
+        var [res] = await pool.query("SELECT SUM(levels) AS level FROM boosts WHERE user = ?", [msg.author.db_id]);
 
         if(res[0] && res[0].level >= limit) {
             return msg.channel.send("You cannot boost any more servers.");
         }
 
-        await pool.query("INSERT INTO boosts (user, guild, levels) VALUES (?, ?, 1) ON DUPLICATE KEY UPDATE levels = levels + 1", [dbuser.db_id, msg.guild.id]);
+        await pool.query("INSERT INTO boosts (user, guild, levels) VALUES (?, ?, 1) ON DUPLICATE KEY UPDATE levels = levels + 1", [msg.author.db_id, msg.guild.id]);
 
         msg.channel.send("Boosted!");
     }
