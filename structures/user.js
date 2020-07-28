@@ -159,6 +159,7 @@ Structures.extend("User", (User) => {
         }
 
         async awardAchievment(code, msg) {
+            await this.fetchUser();
             const id = this.db_id;
             var query = "INSERT INTO achievments_awarded (user, achievment) VALUES (?, (SELECT id FROM achievments WHERE code=?))";
 
@@ -166,18 +167,17 @@ Structures.extend("User", (User) => {
             var [ac] = pool.query("SELECT * FROM achievments WHERE code=?", [code]);
             var a = ac[0];
             await pool.query("UPDATE users SET bbs = bbs + ?, xp = xp + ? WHERE id = ?", [a.value, a.xp, id]);
-            var level = this.updateLevels(await this.fetchUser());
+            var level = this.updateLevels();
             if(level) {
-                var [res] = await pool.query("SELECT * FROM users WHERE id=?", [id]);
-                this.levelUp(level, msg, res[0]);
+                this.levelUp(level, msg);
             }
             return results;
         }
 
-        async levelUp(level, msg, user) {
+        async levelUp(level, msg) {
             var embed = newEmbed();
             embed.setTitle(msg.author.username + " leveled up! ");
-            embed.setDescription("Current level is " + level + ". XP points owned: " + user.xp + " / " + this.getNextLevel(user.xp));
+            embed.setDescription("Current level is " + level + ". XP points owned: " + this.user.xp + " / " + this.getNextLevel());
             if(await msg.guild.settings.get("levelup", true)) {
                 msg.channel.send(embed);
             }
@@ -215,7 +215,7 @@ Structures.extend("User", (User) => {
         }
 
         updateLevels() {
-            var level = this.getLevel();
+            var level = this.level;
             if(this.last_level !== level) {
                 pool.query("UPDATE users SET last_level = " + level + " WHERE id = " + this.db_id, (e) => {
                     if(e)throw e;
