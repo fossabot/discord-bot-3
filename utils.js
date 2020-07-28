@@ -293,13 +293,19 @@ function capitalizeFirstLetter(s) {
 // For reference, see https://wiki.aztec.bot/en/developers/flags
 const flags = {
     owner: 1,
-    developer: 1<<1,
-    admin: 1<<2,
-    bug_hunter: 1<<3,
-    beta_tester: 1<<4
+    developer: 1 << 1,
+    admin: 1 << 2,
+    bug_hunter: 1 << 3,
+    beta_tester: 1 << 4
 };
 
+function trimLines(string) {
+    if(string.raw) string = String.raw(...arguments);
+    return string.split("\n").map(val => val.trim()).join("\n");
+}
+
 module.exports = {
+    trimLines,
     flags,
     shortNumber,
     insertAt,
