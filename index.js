@@ -39,7 +39,7 @@ client.removeAllListeners("messageUpdate");
 
 client.on("message", message => { client.dispatcher.handleMessage(message).catch(err => { client.emit("error", err); }); });
 client.on("messageUpdate", (oldMessage, newMessage) => {
-    client.dispatcher.handleMessage(newMessage, oldMessage).catch(err => { this.emit("error", err); });
+    client.dispatcher.handleMessage(newMessage, oldMessage).catch(err => { client.emit("error", err); });
 });
 
 if(config.dbl) {
@@ -298,6 +298,7 @@ client.once("ready", async () => {
 
             process.on("unhandledRejection", async e => {
                 try {
+                    if(e.message === "Missing Permissions") return;
                     await ch.send({
                         embed: {
                             title: "Rejection - " + e.name,
