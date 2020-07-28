@@ -170,8 +170,9 @@ This category is for developers who are working on discord. Hope it helps!
 
 ### Games
 
+* **osuuser** (alias `ou`) - Shows info about osu user
+* **pokedex** (alias `poke`) - Pokemon commands, see `poke help`
 * **skin** - Shows minecraft skin of given player.
-* **poke** - Pokemon commands, see `poke help`
 
 ### Image
 
