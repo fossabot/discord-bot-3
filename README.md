@@ -104,8 +104,8 @@ The bot has as of now the following commands
 This category is yet to be done.
 
 * **balance** - shows current balance of user
-* **pay \<amount> \<who>** - Sends \<amount> to \<who>. Target must be in same server, does not accept UUIDs (yet).
 * **mine** - Mines the daily amount. Can be called every 12 hours.
+* **pay \<amount> \<who>** - Sends \<amount> to \<who>. Target must be in same server.
 * **premium** - Shows if you have premium access or not
 * **rich** - Shows richest users in guild.
 
@@ -116,50 +116,55 @@ This category is for developers who are working on discord. Hope it helps!
 * **apm** - Gets information of Atom Text Editor Package
 * **bang** (alias **ddg**) - Sends info from `duckduckgo` instant answer or link from `bang`
 * **chart** - Visualizes chart data, uses quickchart.io
+* **color** - Shows color.
 * **deno** - Full deno runtime. Limit of 15 seconds. Only network allowed.
 * **djs** - Searches through Discord.js documentation
-* **php** - Searches through PHP documentation
 * **dstatus** - Shows status of discord servers
-* **jseval** - Evaluates given JS code. Has a limit of 10 seconds, running in NodeVM without access to require.
+* **eval** - Evaluates given JS code. Has a limit of 10 seconds, running in NodeVM without access to require.
 * **format** - Formatting guide
 * **google** - Google it!
 * **code** - Shows information about given HTTP code. Supports some non-official ones. *Thanks Wikipedia!*
 * **logme** - Shows message metadata in JSON format.
 * **npm** - Gets information about given package
+* **php** - Searches through PHP documentation
+* **phpeval** - Evaluates given PHP expression
+* **pip** - Searches through pip (python's package manager)
+* **renderhtml** - Renders given URL in chrome and sends output as image
 * **request** (alias `req`)- Makes request. See `req help`
-* **format** - Shows formatting help
 * **stackoverflow** (alias `so`) - Searches in SO and shows both question and answer
 
 ### Essentials
 
 * **achievments** - Shows which achievments you currently own
-* **avatar** - Shows your or someone else's (Ping 'em!) high-res avatar7
+* **avatar** - Shows your or someone else's (Ping 'em!) high-res avatar
+* **boost** - Boosts server, allowing use of music in given server
 * **covid** - Shows covid statistics
 * **fact** - Gets a random fact
+* **flags** (alias `badges`)- Shows user flags
 * **invite** - Link to invite the bot
 * **math** (alias `calc` or `calculate`) - Calculates given math expression and returns the result. See [mathjs.org](https://mathjs.org)
 * **oldest** - Shows list of users ordered by the time of registration at discord
-* **ping** - Pings the discord API and shows how much time it consumed
 * **puppy** - Because everyone likes images of puppies
 * **reddit** - Shows random image from given subreddit. If not on image-only subreddit, bot may **not** reply as of now.
 * **translate** (alias `t`)- Translates text to given language. Defaults to EN and last message.
+* **unboost** - Removes all boosts from guild casted by user.
 * **voted** (Alias `vote`) - Checks status of user vote and if user didn't vote, shows link.
 
 ### Fun
 
 * **ascii** (alias `figlet`) - Figlet text, also known as ascii-art text
-* **cow** - The original cowsay/cowthink
 * **clap** - Clapify given message
 * **cool** - Cools something
+* **cow** - The original cowsay/cowthink
 * **cowsay** - Make cow say or think text
 * **dab** - <o/
 * **joke** - Random joke of given type. If no type provided, uses random
 * **leet** Leetify message
 * **lenny** - Everyone knows what's lenny
-* **reddituser** - Shows info about reddit user (disabled until fixed)
+* **reddituser** (alias `ru`) - Shows info about reddit user (disabled until fixed)
 * **say** - Make the bot say anything you want
 * **spoiler** - Annoying spoilers
-* **subinfo** - Shows info about reddit subreddit
+* **subinfo** (alias `sub`) - Shows info about reddit subreddit
 * **urban** [alias **ud**] - Find the meaning in the Urban Dictionary
 * **vaporwave** - Vaporify string
 
@@ -177,41 +182,46 @@ This category is for developers who are working on discord. Hope it helps!
 
 ### Mod
 
-* **allow-channels** - Allows usage of bot only in specified channels.
-* **toggle-level** - Toggles level up messages.
 * **announce** - Make an announcement in the same channel. Admin only.
 * **ban** - Bans user
 * **case** - Shows info about case (warn/kick/ban).
+* **channels** (alias `allow-channels`) - Allows usage of bot only in specified channels.
 * **clearsettings** - Clears bot data about current server. **THIS ACTION IS IRREVERSIBLE**
 * **count** - Counts members
-* **editreason** - Edits reason about specified case
 * **giveaway** - Starts a giveaway
 * **history** - Shows users history (kicks/bans/warns).
 * **info** - Info about given resource.
 * **kick** - Kicks user from the server
+* **language** (alias `lang`) - Changes server language
 * **logs** - Logs settings, not yet done.
 * **poll** - Creates a new poll, 30 minutes for free users, 120 (2 hours) for premium users. Generates chart on each change.
 * **profile** - Shows user profile.
 * **purge \<x> \<delete report (true/false)>** - Purges last `x` messages
+* **reason** (alias `editreason`) - Edits reason about specified case
+* **removewarn** - Removes warning from user
 * **role** - Manages roles. See help.
 * **stats** - Stats of Aztec bot
 * **subscribe \<guild> \<channel>** - Subscribes to given channel from guild. (Note: the channel must be set as subscribeable first)
+* **toggle-level** - Toggles level up messages.
 * **unsubscribe \<guild> \<channel>** - Unsubscribes from given channel and guild.
 * **warn** - Warns user
 
 ### Music
 
+This command requires guild to be boosted
+
 * **join** - Joins the bot to voice channel you are currently in.
 * **jump** - Jumps to selected position in queue.
 * **leave** - Leaves the voice channel
+* **now** - Shows currently playing song
 * **pause** - Pauses playback
 * **play** - Starts playing queue
-* **stop** - Stops playing queue
+* **queue** - Views current queue
 * **remove** - Removes song from queue
 * **resume** - Resumes playback
 * **shuffle** - Shuffles queue
 * **skip** - Skips current song (accepts number as argument, any integer value allowed)
-* **view** - Views current queue
+* **stop** - Stops playback of music and resets playback
 * **volume** - Sets or gets volume of playback (in %)
 
 ### NSFW
@@ -233,5 +243,30 @@ These commands are premium only (and aren't in this repository)
 
 This category contains owner-only commands
 
+* **addflag** (alias `toggleflag`) - Adds (or removes) flag to user
+* **afk** - Toggles bots AFK mode (only changes status)
 * **blacklist** - Doesn't yet work
 * **guilds** - List guilds
+* **reloadservice** - Reloads given service
+* **reloadstructures** - Reloads given structure (may cause unexpected results when renaming functions)
+* **restart** - Stops the bot (which will get restarted if configured properly)
+* **runscripts** - Runs custom bash script
+* **settings** - Changes bot settings (name will be changed in future)
+* **shorten** - Shortens URL, specific to our server
+* **status** - Changes status of bot
+* **update** - Runs `update` script
+
+### Util
+
+* **prefix** - Gets or sets bots prefix
+* **ping** - Pings the discord API and shows how much time it consumed
+* **help** - Shows help about given command
+
+### Commands (builtin by commando)
+
+* **groups** - Lists all command groups
+* **enable** - Enables command/group
+* **disable** - Disables command/group
+* **reload** - Reloads command (Owner only)
+* **load** - Loads command (Owner only)
+* **unload** - Unloads command (Owner only)
