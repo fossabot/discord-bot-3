@@ -7,6 +7,7 @@
 ![Discord](https://img.shields.io/discord/689693889640398901)
 ![GitHub forks](https://img.shields.io/github/forks/iceproductions/discord-bot)
 ![GitHub contributors](https://img.shields.io/github/contributors/iceproductions/discord-bot)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Ficeproductions%2Fdiscord-bot.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Ficeproductions%2Fdiscord-bot?ref=badge_shield)
 
 [![Discord Bots](https://top.gg/api/widget/654725534365909043.svg)](https://top.gg/bot/654725534365909043)
 
@@ -271,3 +272,7 @@ This category contains owner-only commands
 * **reload** - Reloads command (Owner only)
 * **load** - Loads command (Owner only)
 * **unload** - Unloads command (Owner only)
+
+
+## License
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Ficeproductions%2Fdiscord-bot.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Ficeproductions%2Fdiscord-bot?ref=badge_large)
